@@ -4,6 +4,7 @@ import unittest
 import pytest
 
 from aleatoric_log_loss import AleatoricLogLoss
+from aleatoric_reg_loss import AleatoricRegLoss
 
 class LogLossTests(unittest.TestCase):
     @pytest.fixture(autouse=True)
@@ -34,7 +35,34 @@ class LogLossTests(unittest.TestCase):
         y_pred = (y_true, y_true)
         loss1 = K.sum(self.loss_fun(y_true, y_pred))
 
-        y_pred = (1-y_true,
-                  y_true)
+        y_pred = (1-y_true, y_true)
+        loss2 = K.sum(self.loss_fun(y_true, y_pred))
+        assert loss1 < loss2
+
+class RegLossTests(unittest.TestCase):
+    @pytest.fixture(autouse=True)
+    def init_params(self):
+        self.params = {
+            "batch_size" : 16,
+            "dims" : [10,2,1]
+        }
+        self.loss_fun = AleatoricRegLoss()
+
+    def create_rand_norm(self):
+        return K.random_normal((self.params["batch_size"],
+                                *self.params["dims"]))
+
+    def test1_loss_shape(self):
+        y_true = self.create_rand_norm()
+        y_pred = (y_true, y_true)
+        loss = self.loss_fun(y_true, y_pred)
+        assert loss.shape == self.params["batch_size"]
+
+    def test2_loss_comparison(self):
+        y_true = self.create_rand_norm()
+        y_pred = (y_true, y_true)
+        loss1 = K.sum(self.loss_fun(y_true, y_pred))
+
+        y_pred = (1-y_true, y_true)
         loss2 = K.sum(self.loss_fun(y_true, y_pred))
         assert loss1 < loss2

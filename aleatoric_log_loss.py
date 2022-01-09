@@ -18,9 +18,9 @@ def aleatoric_log_loss(y_true, y_pred : tuple, n_samples : int):
               dims := (batch, width, height, n_channel)
 
       y_pred: tuple of length 2
-              y_pred[0] tf.Tensor model estimation for logit labels
+              y_pred[0] tf.Tensor model estimation of logit labels
                         dims := (batch, width, height, n_channel)
-              y_pred[1] model estimation for aleatoric stddev
+              y_pred[1] model estimation of aleatoric stddev
                         dims := (batch, width, height, n_channel)
   """
 
@@ -49,7 +49,7 @@ def aleatoric_log_loss(y_true, y_pred : tuple, n_samples : int):
 
 def AleatoricLogLoss(n_samples : int = 100) -> Callable:
   """
-     Constructs an aleatoric loss for classification tasks.
+     Constructs aleatoric loss function for classification tasks.
      n_samples: number of samples s_t to draw from s_t = f + eta_t * sigma
   """
   return lambda y_true, y_pred : aleatoric_log_loss(y_true, y_pred, n_samples)
